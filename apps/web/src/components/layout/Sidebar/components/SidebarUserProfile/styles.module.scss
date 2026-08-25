@@ -1,0 +1,45 @@
+.user-profile-wrapper {
+  display: flex;
+  position: relative;
+  padding: 0.5rem 0.8rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  box-shadow: 0 0 0 1px var(--color-border);
+  gap: 0.75rem;
+  align-items: center;
+  .avatar-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2.5rem;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    font-size: 1.65rem;
+    background-color: var(--color-primary-50);
+    color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-100);
+  }
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.1rem;
+    .user-name {
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1rem;
+      color: var(--color-text-primary);
+    }
+    .user-role {
+      font-size: 0.9rem;
+      line-height: 0.9rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+    }
+  }
+  .logout-wrapper {
+    display: flex;
+    margin-left: auto;
+  }
+}

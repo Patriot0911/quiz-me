@@ -1,0 +1,27 @@
+@use './abstracts/mixins';
+@use './abstracts/variables';
+@use './base/reset';
+
+@use 'tailwindcss';
+
+body {
+  font-family: var(--font-primary);
+  background: var(--color-bg);
+  color: var(--color-text);
+  width: 100%;
+  height: 100%;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

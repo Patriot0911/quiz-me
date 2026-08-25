@@ -1,0 +1,27 @@
+.option {
+  padding: 9px 10px;
+  border-radius: 7px;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  color: var(--ink-1);
+  font-family: var(--font-body);
+  transition: background 0.1s, color 0.1s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--ink-0);
+  }
+
+  &__selected {
+    background: rgba(154, 107, 255, 0.10);
+    color: var(--ink-0);
+  }
+
+  &__disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}

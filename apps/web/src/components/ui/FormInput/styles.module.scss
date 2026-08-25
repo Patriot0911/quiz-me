@@ -1,0 +1,42 @@
+.controller-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-family: var(--font-primary);
+  label {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+  }
+  .controller-input {
+    border-radius: var(--radius-sm);
+    background-color: var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-border);
+    color: var(--color-text-primary);
+    padding:  0.5rem 0.8rem;
+    transition: box-shadow ease-in-out 0.2s;
+    &__touched {
+      box-shadow: 0 0 0 1px var(--color-primary), 0 0 0 4px var(--color-primary-50);
+    }
+    &__error {
+      box-shadow: 0 0 0 1px var(--color-error), 0 0 0 4px var(--color-error-50);
+    }
+    &:disabled {
+      background-color: var(--color-neutral-50);
+      color: var(--color-text-secondary);
+    }
+    &[type="password"] {
+      font: small-caption;
+      font-size: 1rem;
+    }
+  }
+  .controller-error {
+    position: relative;
+    height: 1rem;
+    line-height: 1rem;
+    font-size: 0.75rem;
+    color: var(--color-error);
+    font-weight: 600;
+    opacity: 0.5;
+  }
+}

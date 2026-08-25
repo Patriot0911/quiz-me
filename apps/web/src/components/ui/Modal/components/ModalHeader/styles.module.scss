@@ -1,0 +1,19 @@
+.header {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.headerTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -1px;
+  color: var(--color-text-primary);
+}
+
+.headerSub {
+  font-size: 13.5px;
+  color: var(--ink-1);
+  margin: 0;
+  line-height: 1.5;
+}

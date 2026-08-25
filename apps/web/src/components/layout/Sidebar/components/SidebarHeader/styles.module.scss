@@ -1,0 +1,39 @@
+.top-wrapper {
+  display: flex;
+  position: relative;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 1.2rem 1.5rem;
+  overflow: hidden;
+  .logo-wrapper {
+    user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    .logo-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: var(--radius-sm);
+      background-color: var(--color-primary);
+      color: var(--color-light);
+      font-weight: 800;
+      font-size: 1.25rem;
+    }
+    .logo-text {
+      display: inline-block;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: var(--color-primary);
+      letter-spacing: -1px;
+      line-height: normal;
+      white-space: nowrap;
+    }
+  }
+}

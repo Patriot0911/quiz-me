@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp -r e:/Відпочинок/Дозвілля/med-scheduler/front-med-scheduler/src e:/Відпочинок/Дозвілля/quiz-me/apps/web/src)",
+      "Bash(cp -r e:/Відпочинок/Дозвілля/med-scheduler/front-med-scheduler/public e:/Відпочинок/Дозвілля/quiz-me/apps/web/public)",
+      "Bash(cp e:/Відпочинок/Дозвілля/med-scheduler/front-med-scheduler/next.config.ts e:/Відпочинок/Дозвілля/quiz-me/apps/web/next.config.ts)",
+      "Bash(cp e:/Відпочинок/Дозвілля/med-scheduler/front-med-scheduler/tsconfig.json e:/Відпочинок/Дозвілля/quiz-me/apps/web/tsconfig.json)",
+      "Bash(cp e:/Відпочинок/Дозвілля/med-scheduler/front-med-scheduler/eslint.config.mjs e:/Відпочинок/Дозвілля/quiz-me/apps/web/eslint.config.mjs)"
+    ]
+  }
+}

@@ -1,0 +1,72 @@
+.switchRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  background-color: #08091b;
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  border: 1px solid var(--line-strong);
+
+  &.switchRowDisabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.switchTrack {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 0;
+  padding: 0;
+  background: var(--line-strong);
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &.switchTrackChecked {
+    background: var(--accent);
+  }
+}
+
+.switchThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s ease;
+
+  .switchTrackChecked & {
+    transform: translateX(14px);
+  }
+}
+
+.switchText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.switchLabel {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink-0);
+  letter-spacing: -0.005em;
+}
+
+.switchHint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+}
