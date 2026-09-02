@@ -34,3 +34,14 @@ export interface IJoinLobbyResponse {
   nickname: string;
   participantToken: string;
 };
+
+export interface IMyLobby {
+  id: string;
+  code: string;
+  title: string;
+  mode: LobbyMode;
+  timeoutSeconds: number;
+  status: LobbyStatus;
+  createdAt: string;
+  participantCount: number;
+};

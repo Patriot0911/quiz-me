@@ -17,6 +17,7 @@ import { JoinLobbyDto } from '../dto/join-lobby.dto';
 import { LobbyResponseDto } from '../dto/lobby-response.dto';
 import { PublicLobbyDto } from '../dto/public-lobby.dto';
 import { JoinLobbyResponseDto } from '../dto/join-lobby-response.dto';
+import { MyLobbyDto } from '../dto/my-lobby.dto';
 import { LobbyService } from '../services/lobby.service';
 
 @ApiTags('Lobby')
@@ -33,6 +34,15 @@ export class LobbyController {
     @Body() dto: CreateLobbyDto,
   ): Promise<LobbyResponseDto> {
     return this.lobbyService.createLobby(user.sub, dto);
+  }
+
+  @Get('mine')
+  @ApiBearerAuth()
+  @UseGuards(JwtAccessGuard)
+  async getMine(
+    @CurrentUser() user: IAccessTokenPayload,
+  ): Promise<MyLobbyDto[]> {
+    return this.lobbyService.getMyLobbies(user.sub);
   }
 
   @Get(':code')

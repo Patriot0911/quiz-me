@@ -430,6 +430,132 @@ export class LobbyRuntimeService implements OnApplicationBootstrap {
     return { ok: true };
   }
 
+  resetParticipantTimeout(
+    lobbyId: string,
+    participantId: string,
+  ): IAckResponse {
+    const state = this.lobbies.get(lobbyId);
+    if (!state) return { ok: false, reason: 'not-found' };
+
+    const participant = state.participants.get(participantId);
+    if (!participant) return { ok: false, reason: 'unknown-participant' };
+    if (participant.status !== ParticipantStatus.TimedOut) {
+      return { ok: false, reason: 'not-timed-out' };
+    }
+
+    participant.status = ParticipantStatus.Active;
+    participant.timeoutUntil = null;
+
+    this.participantRepository
+      .update(participantId, {
+        status: ParticipantStatus.Active,
+        timeoutUntil: null,
+      })
+      .catch((error) =>
+        this.logger.error('Failed to persist participant timeout reset', error),
+      );
+
+    this.eventLog.log(
+      lobbyId,
+      LobbyEventType.ParticipantTimeoutReset,
+      participantId,
+    );
+
+    return { ok: true };
+  }
+
+  renameParticipant(
+    lobbyId: string,
+    participantId: string,
+    nickname: string,
+  ): IAckResponse {
+    const state = this.lobbies.get(lobbyId);
+    if (!state) return { ok: false, reason: 'not-found' };
+
+    const participant = state.participants.get(participantId);
+    if (!participant) return { ok: false, reason: 'unknown-participant' };
+
+    const trimmed = nickname.trim();
+    if (!trimmed || trimmed.length > 32) {
+      return { ok: false, reason: 'invalid-nickname' };
+    }
+
+    const isTaken = Array.from(state.participants.values()).some(
+      (other) =>
+        other.id !== participantId &&
+        other.nickname.toLowerCase() === trimmed.toLowerCase(),
+    );
+    if (isTaken) return { ok: false, reason: 'nickname-taken' };
+
+    const previousNickname = participant.nickname;
+    participant.nickname = trimmed;
+
+    if (state.lockedBy?.participantId === participantId) {
+      state.lockedBy = { ...state.lockedBy, nickname: trimmed };
+    }
+    state.queue = state.queue.map((entry) =>
+      entry.participantId === participantId
+        ? { ...entry, nickname: trimmed }
+        : entry,
+    );
+
+    this.participantRepository
+      .update(participantId, { nickname: trimmed })
+      .catch((error) =>
+        this.logger.error('Failed to persist participant rename', error),
+      );
+
+    this.eventLog.log(
+      lobbyId,
+      LobbyEventType.ParticipantRenamed,
+      participantId,
+      {
+        from: previousNickname,
+        to: trimmed,
+      },
+    );
+
+    return { ok: true };
+  }
+
+  kickParticipant(lobbyId: string, participantId: string): IAckResponse {
+    const state = this.lobbies.get(lobbyId);
+    if (!state) return { ok: false, reason: 'not-found' };
+
+    const participant = state.participants.get(participantId);
+    if (!participant) return { ok: false, reason: 'unknown-participant' };
+
+    state.participants.delete(participantId);
+    state.queue = state.queue.filter(
+      (entry) => entry.participantId !== participantId,
+    );
+
+    if (state.lockedBy?.participantId === participantId) {
+      state.lockedBy = null;
+      if (state.roundState === LobbyRoundState.Locked) {
+        state.roundState = LobbyRoundState.Armed;
+      }
+      this.persistRoundState(lobbyId, state);
+    }
+
+    this.participantRepository
+      .delete(participantId)
+      .catch((error) =>
+        this.logger.error('Failed to delete kicked participant', error),
+      );
+
+    this.eventLog.log(
+      lobbyId,
+      LobbyEventType.ParticipantKicked,
+      participantId,
+      {
+        nickname: participant.nickname,
+      },
+    );
+
+    return { ok: true };
+  }
+
   closeLobby(lobbyId: string): void {
     const state = this.lobbies.get(lobbyId);
     if (!state) return;

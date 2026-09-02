@@ -8,12 +8,16 @@ export interface ILobbyRoomContextValue {
   connectionStatus: TLobbyConnectionStatus;
   snapshot: ILobbySnapshot | null;
   errorMessage: string | null;
+  wasKicked: boolean;
   role: 'host' | 'participant';
   selfParticipantId?: string;
   armRound: () => Promise<IAckResponse>;
   resetRound: () => Promise<IAckResponse>;
   judge: (correct: boolean) => Promise<IAckResponse>;
   resetTimeouts: () => Promise<IAckResponse>;
+  resetParticipantTimeout: (participantId: string) => Promise<IAckResponse>;
+  renameParticipant: (participantId: string, nickname: string) => Promise<IAckResponse>;
+  kickParticipant: (participantId: string) => Promise<IAckResponse>;
   updateSettings: (changes: { mode?: LobbyMode; timeoutSeconds?: number }) => Promise<IAckResponse>;
   buzz: () => Promise<IAckResponse>;
 }

@@ -7,14 +7,9 @@ import { LobbyMode } from '@/enums/lobby-mode.enum';
 import { LobbyRoundState } from '@/enums/lobby-round-state.enum';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import { LOBBY_MODE_LABELS } from '@/configs/lobby.dictionary';
 
 import styles from './styles.module.scss';
-
-const MODE_LABELS: Record<LobbyMode, string> = {
-  [LobbyMode.FIRST_LOCK]: 'а) Перший тисне — блокує всіх',
-  [LobbyMode.FIRST_LOCK_JUDGED]: 'а-2) Перший тисне — з оцінкою хоста',
-  [LobbyMode.QUEUE]: 'б) Черга — тиснуть всі',
-};
 
 const HostModeSettings = () => {
   const { snapshot, updateSettings } = useLobbyRoom();
@@ -53,7 +48,7 @@ const HostModeSettings = () => {
         >
           {Object.values(LobbyMode).map((value) => (
             <option key={value} value={value}>
-              {MODE_LABELS[value]}
+              {LOBBY_MODE_LABELS[value]}
             </option>
           ))}
         </select>

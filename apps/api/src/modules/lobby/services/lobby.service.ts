@@ -12,6 +12,7 @@ import { JoinLobbyDto } from '../dto/join-lobby.dto';
 import { LobbyResponseDto } from '../dto/lobby-response.dto';
 import { PublicLobbyDto } from '../dto/public-lobby.dto';
 import { JoinLobbyResponseDto } from '../dto/join-lobby-response.dto';
+import { MyLobbyDto } from '../dto/my-lobby.dto';
 import { LobbyMode } from '../enums/lobby-mode.enum';
 import { LobbyStatus } from '../enums/lobby-status.enum';
 import { LobbyEventType } from '../enums/lobby-event-type.enum';
@@ -60,6 +61,25 @@ export class LobbyService {
       timeoutSeconds: lobby.timeoutSeconds,
       status: lobby.status,
     };
+  }
+
+  async getMyLobbies(hostId: string): Promise<MyLobbyDto[]> {
+    const lobbies = await this.lobbyRepository.find({
+      where: { hostId },
+      relations: ['participants'],
+      order: { createdAt: 'DESC' },
+    });
+
+    return lobbies.map((lobby) => ({
+      id: lobby.id,
+      code: lobby.code,
+      title: lobby.title,
+      mode: lobby.mode,
+      timeoutSeconds: lobby.timeoutSeconds,
+      status: lobby.status,
+      createdAt: lobby.createdAt,
+      participantCount: lobby.participants.length,
+    }));
   }
 
   async getPublicLobby(code: string): Promise<PublicLobbyDto> {

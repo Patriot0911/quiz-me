@@ -18,7 +18,7 @@ export const SIDEBAR_ITEMS: INavbarItem[] = [
   },
   {
     label: 'Лобі',
-    href: '/lobby/create',
+    href: '/lobby',
     icon: MdOutlineQuiz({}),
     isAuthenticated: true,
   },

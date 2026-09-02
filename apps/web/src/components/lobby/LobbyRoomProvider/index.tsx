@@ -32,6 +32,7 @@ const LobbyRoomProvider = ({
   const [connectionStatus, setConnectionStatus] = useState<TLobbyConnectionStatus>('connecting');
   const [snapshot, setSnapshot] = useState<ILobbySnapshot | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [wasKicked, setWasKicked] = useState(false);
 
   useEffect(() => {
     const socket = createLobbySocket(auth);
@@ -53,6 +54,10 @@ const LobbyRoomProvider = ({
 
     socket.on('lobby:snapshot', (data: ILobbySnapshot) => {
       setSnapshot(data);
+    });
+
+    socket.on('lobby:kicked', () => {
+      setWasKicked(true);
     });
 
     socket.on('lobby:event', (event: ILobbyEventBroadcast) => {
@@ -84,6 +89,19 @@ const LobbyRoomProvider = ({
   const resetRound = useCallback(() => emitAck('host:resetRound'), [emitAck]);
   const judge = useCallback((correct: boolean) => emitAck('host:judge', { correct }), [emitAck]);
   const resetTimeouts = useCallback(() => emitAck('host:resetTimeouts'), [emitAck]);
+  const resetParticipantTimeout = useCallback(
+    (participantId: string) => emitAck('host:resetParticipantTimeout', { participantId }),
+    [emitAck],
+  );
+  const renameParticipant = useCallback(
+    (participantId: string, nickname: string) =>
+      emitAck('host:renameParticipant', { participantId, nickname }),
+    [emitAck],
+  );
+  const kickParticipant = useCallback(
+    (participantId: string) => emitAck('host:kickParticipant', { participantId }),
+    [emitAck],
+  );
   const updateSettings = useCallback(
     (changes: { mode?: LobbyMode; timeoutSeconds?: number }) =>
       emitAck('host:updateSettings', changes),
@@ -97,12 +115,16 @@ const LobbyRoomProvider = ({
         connectionStatus,
         snapshot,
         errorMessage,
+        wasKicked,
         role,
         selfParticipantId,
         armRound,
         resetRound,
         judge,
         resetTimeouts,
+        resetParticipantTimeout,
+        renameParticipant,
+        kickParticipant,
         updateSettings,
         buzz,
       }}

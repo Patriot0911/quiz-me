@@ -227,6 +227,93 @@ export class LobbyGateway
     return result;
   }
 
+  @SubscribeMessage('host:resetParticipantTimeout')
+  handleResetParticipantTimeout(
+    @ConnectedSocket() socket: LobbySocket,
+    @MessageBody() data: { participantId?: string },
+  ): IAckResponse {
+    if (socket.data.role !== 'host') return { ok: false, reason: 'forbidden' };
+    if (!data?.participantId) return { ok: false, reason: 'invalid-payload' };
+
+    const lobbyId = socket.data.lobbyId;
+    const result = this.runtime.resetParticipantTimeout(
+      lobbyId,
+      data.participantId,
+    );
+    if (result.ok) {
+      this.broadcastSnapshot(lobbyId);
+      this.broadcastEvent(
+        lobbyId,
+        LobbyEventType.ParticipantTimeoutReset,
+        data.participantId,
+      );
+    }
+    return result;
+  }
+
+  @SubscribeMessage('host:renameParticipant')
+  handleRenameParticipant(
+    @ConnectedSocket() socket: LobbySocket,
+    @MessageBody() data: { participantId?: string; nickname?: string },
+  ): IAckResponse {
+    if (socket.data.role !== 'host') return { ok: false, reason: 'forbidden' };
+    if (!data?.participantId || !data.nickname) {
+      return { ok: false, reason: 'invalid-payload' };
+    }
+
+    const lobbyId = socket.data.lobbyId;
+    const result = this.runtime.renameParticipant(
+      lobbyId,
+      data.participantId,
+      data.nickname,
+    );
+    if (result.ok) {
+      this.broadcastSnapshot(lobbyId);
+      this.broadcastEvent(
+        lobbyId,
+        LobbyEventType.ParticipantRenamed,
+        data.participantId,
+      );
+    }
+    return result;
+  }
+
+  @SubscribeMessage('host:kickParticipant')
+  handleKickParticipant(
+    @ConnectedSocket() socket: LobbySocket,
+    @MessageBody() data: { participantId?: string },
+  ): IAckResponse {
+    if (socket.data.role !== 'host') return { ok: false, reason: 'forbidden' };
+    if (!data?.participantId) return { ok: false, reason: 'invalid-payload' };
+
+    const lobbyId = socket.data.lobbyId;
+    const result = this.runtime.kickParticipant(lobbyId, data.participantId);
+    if (result.ok) {
+      this.disconnectParticipant(lobbyId, data.participantId);
+      this.broadcastSnapshot(lobbyId);
+      this.broadcastEvent(
+        lobbyId,
+        LobbyEventType.ParticipantKicked,
+        data.participantId,
+      );
+    }
+    return result;
+  }
+
+  private disconnectParticipant(lobbyId: string, participantId: string): void {
+    for (const target of this.server.sockets.sockets.values()) {
+      const data = (target as LobbySocket).data;
+      if (
+        data.role === 'participant' &&
+        data.lobbyId === lobbyId &&
+        data.participantId === participantId
+      ) {
+        target.emit('lobby:kicked');
+        target.disconnect(true);
+      }
+    }
+  }
+
   private broadcastSnapshot(lobbyId: string): void {
     const state = this.runtime.getStateByLobbyId(lobbyId);
     if (!state) return;

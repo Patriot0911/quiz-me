@@ -9,5 +9,8 @@ export enum LobbyEventType {
   JudgedIncorrect = 'judged_incorrect',
   TimeoutSet = 'timeout_set',
   TimeoutsReset = 'timeouts_reset',
+  ParticipantTimeoutReset = 'participant_timeout_reset',
+  ParticipantRenamed = 'participant_renamed',
+  ParticipantKicked = 'participant_kicked',
   ModeChanged = 'mode_changed',
 }
