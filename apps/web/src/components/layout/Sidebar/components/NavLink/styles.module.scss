@@ -56,19 +56,6 @@
       transform: translateX(10px);
     }
   }
-  &.collapsed {
-    a {
-      padding: 0.6rem 1.95rem;
-      gap: 0;
-      span {
-        max-width: 0;
-        opacity: 0;
-      }
-    }
-    &:not(.active):hover a {
-      transform: none;
-    }
-  }
   &.active {
     background-color: var(--color-primary-100);
     &::before {

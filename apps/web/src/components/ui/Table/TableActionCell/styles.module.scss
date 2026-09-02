@@ -37,14 +37,14 @@
 
 .btn-danger {
   &:hover:not(:disabled) {
-    background: rgba(255, 80, 80, 0.10);
+    background: rgba(var(--color-error-rgb), 0.10);
     color: var(--status-error);
   }
 }
 
 .btn-primary {
   &:hover:not(:disabled) {
-    background: rgba(154, 107, 255, 0.12);
+    background: rgba(var(--color-primary-rgb), 0.12);
     color: var(--accent);
   }
 }

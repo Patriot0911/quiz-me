@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   Post,
@@ -58,5 +59,16 @@ export class LobbyController {
     @Body() dto: JoinLobbyDto,
   ): Promise<JoinLobbyResponseDto> {
     return this.lobbyService.joinLobby(code, dto);
+  }
+
+  @Post(':code/close')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
+  @UseGuards(JwtAccessGuard)
+  async close(
+    @CurrentUser() user: IAccessTokenPayload,
+    @Param('code') code: string,
+  ): Promise<void> {
+    return this.lobbyService.closeLobbyAsHost(code, user.sub);
   }
 }

@@ -23,8 +23,8 @@
     transition: background 0.15s, color 0.15s, border-color 0.15s;
 
     &:hover:not(:disabled) {
-      background: rgba(154, 107, 255, 0.12);
-      border-color: rgba(154, 107, 255, 0.30);
+      background: rgba(var(--color-primary-rgb), 0.12);
+      border-color: rgba(var(--color-primary-rgb), 0.30);
       color: var(--ink-0);
     }
 

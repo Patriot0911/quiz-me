@@ -32,6 +32,10 @@ class LobbyService {
   ): Promise<IJoinLobbyResponse> {
     return apiClient.post(`/lobby/${code}/join`, payload);
   }
+
+  static async closeLobby(code: string): Promise<void> {
+    return apiClient.post(`/lobby/${code}/close`);
+  }
 }
 
 export default LobbyService;

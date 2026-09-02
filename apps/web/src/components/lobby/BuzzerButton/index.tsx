@@ -11,19 +11,37 @@ import styles from './styles.module.scss';
 const BuzzerButton = () => {
   const { snapshot, selfParticipantId, buzz } = useLobbyRoom();
   const [isBuzzing, setIsBuzzing] = useState(false);
-  const [now, setNow] = useState(() => Date.now());
 
   const self = snapshot?.participants.find((p) => p.id === selfParticipantId);
   const timeoutUntilMs = self?.timeoutUntil ? new Date(self.timeoutUntil).getTime() : null;
-  const remainingSeconds =
-    timeoutUntilMs !== null ? Math.max(0, Math.ceil((timeoutUntilMs - now) / 1000)) : 0;
-  const isTimedOut = self?.status === ParticipantStatus.TIMED_OUT && remainingSeconds > 0;
+  const isTimedOutByServer = self?.status === ParticipantStatus.TIMED_OUT;
+
+  const [remainingSeconds, setRemainingSeconds] = useState(0);
 
   useEffect(() => {
-    if (!isTimedOut) return undefined;
-    const interval = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(interval);
-  }, [isTimedOut]);
+    if (!isTimedOutByServer || timeoutUntilMs === null) {
+      setRemainingSeconds(0);
+      return undefined;
+    }
+
+    const tick = () => {
+      setRemainingSeconds(Math.max(0, Math.ceil((timeoutUntilMs - Date.now()) / 1000)));
+    };
+    tick();
+
+    // ticks the visible countdown every second
+    const interval = setInterval(tick, 1000);
+    // fires exactly once, at the real deadline, so the button unlocks on time
+    // regardless of the 1s interval's alignment
+    const expiry = setTimeout(tick, Math.max(0, timeoutUntilMs - Date.now()));
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(expiry);
+    };
+  }, [isTimedOutByServer, timeoutUntilMs]);
+
+  const isTimedOut = isTimedOutByServer && remainingSeconds > 0;
 
   const alreadyInQueue = snapshot?.queue.some(
     (entry) => entry.participantId === selfParticipantId,

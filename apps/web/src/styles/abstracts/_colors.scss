@@ -2,85 +2,108 @@
   /* Base */
   --color-light: #FFFFFF;
   --color-light-rgb: 255, 255, 255;
-  --color-dark: #0B0F19;
-  --color-dark-rgb: 11, 15, 25;
+  --color-dark: #000000;
+  --color-dark-rgb: 0, 0, 0;
 
   /* Surfaces & background */
-  --color-bg: #F5F7FC;
-  --color-surface: #FFFFFF;
-  --color-surface-hover: #F1F4FA;
+  --color-bg: #0A0A0B;
+  --color-surface: #141416;
+  --color-surface-hover: #1E1E21;
 
   /* Borders */
-  --color-border: #E3E8F2;
-  --color-border-strong: #CBD4E4;
+  --color-border: #2A2A2E;
+  --color-border-strong: #3D3D42;
 
   /* Text */
   --color-text: var(--color-text-primary);
-  --color-text-primary: #161C24;
-  --color-text-secondary: #717885;
-  --color-text-muted: #9AA3B2;
+  --color-text-primary: #F5F5F4;
+  --color-text-secondary: #A8A8A6;
+  --color-text-muted: #6E6E6C;
 
-  /* Neutral scale */
-  --color-neutral-50:  #F8F9FC;
-  --color-neutral-100: #F1F3F8;
-  --color-neutral-200: #E3E8F2;
-  --color-neutral-300: #CBD4E4;
-  --color-neutral-400: #9AA3B2;
-  --color-neutral-500: #717885;
-  --color-neutral-600: #4B5565;
+  /* ink aliases — used across lobby/table/select components */
+  --ink-0: #FFFFFF;
+  --ink-1: var(--color-text-primary);
+  --ink-2: var(--color-text-secondary);
+  --ink-3: var(--color-text-muted);
 
-  /* Primary — brand blue */
-  --color-primary: #3457E2;
-  --color-primary-rgb: 52, 87, 226;
-  --color-primary-50:  #EEF2FF;
-  --color-primary-100: #DCE4FE;
-  --color-primary-200: #B4C4FC;
-  --color-primary-300: #8AA0F8;
-  --color-primary-400: #5C79F2;
-  --color-primary-500: #2544BE;
+  /* surface aliases — same components as above */
+  --surface: var(--color-surface);
+  --surface-2: var(--color-surface-hover);
+  --surface-3: var(--color-neutral-200);
 
-  /* Secondary — deep slate, dark UI accents */
-  --color-secondary: #222B38;
-  --color-secondary-100: #F1F5FB;
-  --color-secondary-200: #E1E9F4;
-  --color-secondary-300: #CED7E5;
-  --color-secondary-400: #778191;
+  /* line aliases — same components as above */
+  --line: var(--color-border);
+  --line-strong: var(--color-border-strong);
 
-  /* Accent — violet, used for roles/admin highlights */
-  --color-accent: #7C5CFC;
-  --color-accent-rgb: 124, 92, 252;
-  --color-accent-50:  #F2EFFF;
-  --color-accent-100: #E2DBFF;
-  --color-accent-200: #C6B8FE;
-  --color-accent-300: #A78FFC;
-  --color-accent-400: #8E6FFC;
-  --color-accent-500: #5B3FD6;
+  /* accent alias — these components treat "accent" as the brand color */
+  --accent: var(--color-primary);
+  --accent-glow-2: rgba(var(--color-primary-rgb), 0.35);
+
+  /* status aliases */
+  --status-error: var(--color-error);
+  --status-error-2: rgba(var(--color-error-rgb), 0.35);
+
+  /* Neutral scale (dark-ordered: 50 = darkest, 600 = lightest) */
+  --color-neutral-50:  #131315;
+  --color-neutral-100: #1C1C1F;
+  --color-neutral-200: #2A2A2E;
+  --color-neutral-300: #3D3D42;
+  --color-neutral-400: #5A5A5F;
+  --color-neutral-500: #8A8A8E;
+  --color-neutral-600: #B8B8BB;
+
+  /* Primary — brand orange */
+  --color-primary: #FF7A1A;
+  --color-primary-rgb: 255, 122, 26;
+  --color-primary-50:  #241206;
+  --color-primary-100: #331A08;
+  --color-primary-200: #6B3614;
+  --color-primary-300: #A35420;
+  --color-primary-400: #E06B1E;
+  --color-primary-500: #CC5F14;
+
+  /* Secondary — near-black slate for dark UI accents */
+  --color-secondary: #1A1A1C;
+  --color-secondary-100: #202024;
+  --color-secondary-200: #2A2A2E;
+  --color-secondary-300: #3D3D42;
+  --color-secondary-400: #6E6E73;
+
+  /* Accent — amber/gold, used for roles/admin highlights */
+  --color-accent: #FFC145;
+  --color-accent-rgb: 255, 193, 69;
+  --color-accent-50:  #241A05;
+  --color-accent-100: #332507;
+  --color-accent-200: #664A0F;
+  --color-accent-300: #997018;
+  --color-accent-400: #E0A82C;
+  --color-accent-500: #CC9420;
 
   /* States */
   --color-error: #E03131;
   --color-error-rgb: 224, 49, 49;
-  --color-error-50:  #FDECEC;
-  --color-error-100: #FBCACA;
-  --color-error-200: #F69999;
-  --color-error-300: #F26767;
+  --color-error-50:  #2B1010;
+  --color-error-100: #4A1616;
+  --color-error-200: #7A2323;
+  --color-error-300: #B22C2C;
   --color-error-400: #EE3A3A;
   --color-error-500: #C21E1E;
 
   --color-success: #17A768;
   --color-success-rgb: 23, 167, 104;
-  --color-success-50:  #E9F8F1;
-  --color-success-100: #C8F0DE;
-  --color-success-200: #97E2C4;
-  --color-success-300: #63D3A8;
+  --color-success-50:  #0C231A;
+  --color-success-100: #123A29;
+  --color-success-200: #185C3F;
+  --color-success-300: #1E8656;
   --color-success-400: #38C58F;
   --color-success-500: #12875A;
 
-  --color-warning: #E98A3A;
-  --color-warning-rgb: 233, 138, 58;
-  --color-warning-50:  #FDF2E7;
-  --color-warning-100: #FBE0C3;
-  --color-warning-200: #F5C08A;
-  --color-warning-300: #EFA35C;
-  --color-warning-400: #E98A3A;
-  --color-warning-500: #C06A22;
+  --color-warning: #F5C242;
+  --color-warning-rgb: 245, 194, 66;
+  --color-warning-50:  #2B2108;
+  --color-warning-100: #47370D;
+  --color-warning-200: #705816;
+  --color-warning-300: #A6821F;
+  --color-warning-400: #F5C242;
+  --color-warning-500: #D9A82C;
 }

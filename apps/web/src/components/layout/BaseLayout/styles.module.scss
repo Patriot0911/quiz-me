@@ -11,11 +11,7 @@
       flex-direction: column;
       flex-grow: 1;
       padding: 1rem 1.5rem;
-      background: linear-gradient(
-        to right bottom,
-        var(--color-bg),
-        var(--color-light)
-      );
+      background: var(--color-bg);
     }
   }
 }

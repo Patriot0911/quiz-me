@@ -42,7 +42,7 @@
     gap: 10px;
     padding: 10px 12px;
     border-radius: var(--radius-sm);
-    background: #08091B;
+    background: var(--surface);
     border: 1px solid rgba(255, 255, 255, 0.08);
     transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
     font-size: 13px;
@@ -54,15 +54,15 @@
     &:focus-within {
       &:not(.controller-select__disabled) {
         border-color: var(--accent);
-        background: #0C0E25;
-        box-shadow: 0 0 0 3px rgba(154, 107, 255, 0.14);
+        background: var(--surface-2);
+        box-shadow: 0 0 0 3px var(--accent-glow-2);
       }
     }
 
     &__touched {
       border-color: var(--accent);
-      background: #0C0E25;
-      box-shadow: 0 0 0 3px rgba(154, 107, 255, 0.14);
+      background: var(--surface-2);
+      box-shadow: 0 0 0 3px var(--accent-glow-2);
     }
     &__error {
       border-color: var(--status-error);
@@ -72,7 +72,7 @@
     &__disabled {
       border-color: transparent;
       box-shadow: none;
-      background: #131322;
+      background: var(--color-neutral-50);
       input {
         color: var(--ink-2);
       }

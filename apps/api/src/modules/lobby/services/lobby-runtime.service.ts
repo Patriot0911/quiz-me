@@ -556,6 +556,43 @@ export class LobbyRuntimeService implements OnApplicationBootstrap {
     return { ok: true };
   }
 
+  sweepExpiredTimeouts(): string[] {
+    const now = Date.now();
+    const changedLobbyIds: string[] = [];
+
+    for (const [lobbyId, state] of this.lobbies) {
+      let changed = false;
+
+      for (const participant of state.participants.values()) {
+        if (
+          participant.status === ParticipantStatus.TimedOut &&
+          participant.timeoutUntil &&
+          participant.timeoutUntil.getTime() <= now
+        ) {
+          participant.status = ParticipantStatus.Active;
+          participant.timeoutUntil = null;
+          changed = true;
+
+          this.participantRepository
+            .update(participant.id, {
+              status: ParticipantStatus.Active,
+              timeoutUntil: null,
+            })
+            .catch((error) =>
+              this.logger.error(
+                'Failed to persist swept participant timeout',
+                error,
+              ),
+            );
+        }
+      }
+
+      if (changed) changedLobbyIds.push(lobbyId);
+    }
+
+    return changedLobbyIds;
+  }
+
   closeLobby(lobbyId: string): void {
     const state = this.lobbies.get(lobbyId);
     if (!state) return;

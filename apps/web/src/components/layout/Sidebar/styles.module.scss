@@ -1,24 +1,16 @@
-@use '../../../styles/abstracts/mixins' as *;
 @use './tokens' as tokens;
 
 .sidebar-wrapper {
   position: relative;
-  width: tokens.$sidebar-collapsed-width;
+  width: tokens.$sidebar-expanded-width;
   flex-shrink: 0;
-  transition: width ease-in-out 0.3s;
-
-  @include mq('md') {
-    &.sidebar-open {
-      width: tokens.$sidebar-expanded-width;
-    }
-  }
 
   .sidebar {
     position: fixed;
     top: 0;
     left: 0;
 
-    width: tokens.$sidebar-collapsed-width;
+    width: tokens.$sidebar-expanded-width;
     height: 100dvh;
 
     display: flex;
@@ -30,18 +22,5 @@
     border-right: 1px solid var(--color-border);
     box-shadow: var(--shadow-sm);
     z-index: 50;
-
-    transition: width ease-in-out 0.3s, box-shadow ease-in-out 0.3s;
-
-    &.sidebar-open {
-      width: 100dvw;
-      box-shadow: var(--shadow-lg);
-    }
-
-    @include mq('md') {
-      &.sidebar-open {
-        width: tokens.$sidebar-expanded-width;
-      }
-    }
   }
 }

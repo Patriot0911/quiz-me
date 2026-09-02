@@ -10,7 +10,7 @@ import useMeQuery from '@/hooks/queries/auth/useMeQuery';
 
 import styles from './styles.module.scss';
 
-const NavLink = ({ href, label, icon, exactPath, isAuthenticated, roles, isOpen, }: INavLinkProps) => {
+const NavLink = ({ href, label, icon, exactPath, isAuthenticated, roles, }: INavLinkProps) => {
   const authStatus = useAppSelector(authStatusSelector);
   const { data: me, } = useMeQuery();
   const pathname = usePathname();
@@ -29,7 +29,6 @@ const NavLink = ({ href, label, icon, exactPath, isAuthenticated, roles, isOpen,
         cn(
           styles['nav-item'],
           isActive && styles['active'],
-          !isOpen && styles['collapsed']
         )
       }
     >

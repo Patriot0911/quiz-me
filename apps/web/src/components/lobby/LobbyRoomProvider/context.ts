@@ -9,6 +9,7 @@ export interface ILobbyRoomContextValue {
   snapshot: ILobbySnapshot | null;
   errorMessage: string | null;
   wasKicked: boolean;
+  wasClosed: boolean;
   role: 'host' | 'participant';
   selfParticipantId?: string;
   armRound: () => Promise<IAckResponse>;

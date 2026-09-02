@@ -17,11 +17,11 @@
     cursor: pointer;
 
     &:hover {
-      background: rgba(154, 107, 255, 0.08);
+      background: rgba(var(--color-primary-rgb), 0.08);
     }
 
     &:active {
-      background: rgba(154, 107, 255, 0.14);
+      background: rgba(var(--color-primary-rgb), 0.14);
     }
   }
 }
@@ -75,8 +75,8 @@
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0.04) 0%,
-    rgba(154, 107, 255, 0.12) 40%,
-    rgba(107, 134, 255, 0.10) 60%,
+    rgba(var(--color-primary-rgb), 0.12) 40%,
+    rgba(var(--color-accent-rgb), 0.10) 60%,
     rgba(255, 255, 255, 0.04) 100%
   );
   background-size: 300% 100%;

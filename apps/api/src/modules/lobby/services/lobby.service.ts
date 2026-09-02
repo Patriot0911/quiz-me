@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -19,6 +20,7 @@ import { LobbyEventType } from '../enums/lobby-event-type.enum';
 import { LobbyRuntimeService } from './lobby-runtime.service';
 import { ParticipantTokenService } from './participant-token.service';
 import { LobbyEventLogService } from './lobby-event-log.service';
+import { LobbyGateway } from '../gateways/lobby.gateway';
 
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const CODE_LENGTH = 6;
@@ -33,6 +35,7 @@ export class LobbyService {
     private readonly runtime: LobbyRuntimeService,
     private readonly participantTokenService: ParticipantTokenService,
     private readonly eventLog: LobbyEventLogService,
+    private readonly gateway: LobbyGateway,
   ) {}
 
   async createLobby(
@@ -106,27 +109,50 @@ export class LobbyService {
     const existing = await this.participantRepository.findOne({
       where: { lobbyId: lobby.id, nickname: ILike(dto.nickname) },
     });
+
+    let participant: LobbyParticipantEntity;
+
     if (existing) {
-      throw new ConflictException('Nickname already taken in this lobby');
-    }
+      const runtimeState = this.runtime.getStateByLobbyId(lobby.id);
+      const isConnected =
+        runtimeState?.participants.get(existing.id)?.connected ?? false;
+      if (isConnected) {
+        throw new ConflictException('Nickname already taken in this lobby');
+      }
 
-    const participant = await this.participantRepository.save(
-      this.participantRepository.create({
-        lobbyId: lobby.id,
-        nickname: dto.nickname,
-      }),
-    );
+      participant = existing;
+      if (!runtimeState) {
+        this.runtime.registerLobby(lobby);
+      }
+      if (!this.runtime.getStateByLobbyId(lobby.id)!.participants.has(existing.id)) {
+        this.runtime.registerParticipant(lobby.id, existing);
+      }
 
-    if (!this.runtime.getStateByLobbyId(lobby.id)) {
-      this.runtime.registerLobby(lobby);
+      this.eventLog.log(
+        lobby.id,
+        LobbyEventType.ParticipantReconnected,
+        participant.id,
+        { nickname: participant.nickname },
+      );
+    } else {
+      participant = await this.participantRepository.save(
+        this.participantRepository.create({
+          lobbyId: lobby.id,
+          nickname: dto.nickname,
+        }),
+      );
+
+      if (!this.runtime.getStateByLobbyId(lobby.id)) {
+        this.runtime.registerLobby(lobby);
+      }
+      this.runtime.registerParticipant(lobby.id, participant);
+      this.eventLog.log(
+        lobby.id,
+        LobbyEventType.ParticipantJoined,
+        participant.id,
+        { nickname: participant.nickname },
+      );
     }
-    this.runtime.registerParticipant(lobby.id, participant);
-    this.eventLog.log(
-      lobby.id,
-      LobbyEventType.ParticipantJoined,
-      participant.id,
-      { nickname: participant.nickname },
-    );
 
     const participantToken = await this.participantTokenService.sign(
       lobby.id,
@@ -140,6 +166,20 @@ export class LobbyService {
       nickname: participant.nickname,
       participantToken,
     };
+  }
+
+  async closeLobbyAsHost(code: string, hostId: string): Promise<void> {
+    const lobby = await this.lobbyRepository.findOne({ where: { code } });
+    if (!lobby) throw new NotFoundException('Lobby not found');
+    if (lobby.hostId !== hostId) {
+      throw new ForbiddenException('Not your lobby');
+    }
+    if (lobby.status === LobbyStatus.Closed) {
+      throw new ConflictException('Lobby already closed');
+    }
+
+    this.runtime.closeLobby(lobby.id);
+    this.gateway.notifyLobbyClosed(lobby.id);
   }
 
   private async generateUniqueCode(): Promise<string> {

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import toast from 'react-hot-toast';
-import BaseLayout from '@/components/layout/BaseLayout';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import LobbyRoomProvider from '@/components/lobby/LobbyRoomProvider';
@@ -66,31 +65,31 @@ const JoinLobbyPage = () => {
 
   if (lobbyQuery.isLoading) {
     return (
-      <BaseLayout>
+      <div className={styles.page}>
         <p className={styles.status}>Завантаження лобі...</p>
-      </BaseLayout>
+      </div>
     );
   }
 
   if (lobbyQuery.isError || !lobbyQuery.data) {
     return (
-      <BaseLayout>
+      <div className={styles.page}>
         <p className={styles.status}>Лобі не знайдено</p>
-      </BaseLayout>
+      </div>
     );
   }
 
   if (lobbyQuery.data.status === LobbyStatus.CLOSED) {
     return (
-      <BaseLayout>
+      <div className={styles.page}>
         <p className={styles.status}>Це лобі вже закрито</p>
-      </BaseLayout>
+      </div>
     );
   }
 
   if (participant) {
     return (
-      <BaseLayout>
+      <div className={styles.page}>
         <LobbyRoomProvider
           key={participant.participantToken}
           role="participant"
@@ -100,12 +99,12 @@ const JoinLobbyPage = () => {
           <ConnectionWatcher onError={handleConnectionError} />
           <ParticipantBuzzerView nickname={participant.nickname} />
         </LobbyRoomProvider>
-      </BaseLayout>
+      </div>
     );
   }
 
   return (
-    <BaseLayout>
+    <div className={styles.page}>
       <div className={styles.wrapper}>
         <h1 className={styles.title}>{lobbyQuery.data.title}</h1>
         <Input
@@ -122,7 +121,7 @@ const JoinLobbyPage = () => {
           Приєднатись
         </Button>
       </div>
-    </BaseLayout>
+    </div>
   );
 };
 

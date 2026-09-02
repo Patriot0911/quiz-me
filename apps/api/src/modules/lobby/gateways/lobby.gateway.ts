@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { OnModuleDestroy } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -34,12 +35,17 @@ type LobbySocket = Socket<any, any, any, ILobbySocketData>;
   },
 })
 export class LobbyGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+  implements
+    OnGatewayInit,
+    OnGatewayConnection,
+    OnGatewayDisconnect,
+    OnModuleDestroy
 {
   @WebSocketServer()
   server: Server;
 
   private readonly logger = new Logger(LobbyGateway.name);
+  private timeoutSweepInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor(
     private readonly runtime: LobbyRuntimeService,
@@ -54,6 +60,18 @@ export class LobbyGateway
         .then(() => next())
         .catch(() => next(new Error('unauthorized')));
     });
+
+    this.timeoutSweepInterval = setInterval(() => {
+      const changedLobbyIds = this.runtime.sweepExpiredTimeouts();
+      changedLobbyIds.forEach((lobbyId) => this.broadcastSnapshot(lobbyId));
+    }, 1000);
+  }
+
+  onModuleDestroy(): void {
+    if (this.timeoutSweepInterval) {
+      clearInterval(this.timeoutSweepInterval);
+      this.timeoutSweepInterval = null;
+    }
   }
 
   private async authenticate(socket: LobbySocket): Promise<void> {
@@ -298,6 +316,16 @@ export class LobbyGateway
       );
     }
     return result;
+  }
+
+  notifyLobbyClosed(lobbyId: string): void {
+    this.server.to(this.room(lobbyId)).emit('lobby:closed');
+    for (const target of this.server.sockets.sockets.values()) {
+      const data = (target as LobbySocket).data;
+      if (data.lobbyId === lobbyId) {
+        target.disconnect(true);
+      }
+    }
   }
 
   private disconnectParticipant(lobbyId: string, participantId: string): void {

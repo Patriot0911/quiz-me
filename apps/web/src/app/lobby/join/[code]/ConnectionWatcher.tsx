@@ -9,7 +9,7 @@ interface IConnectionWatcherProps {
 }
 
 const ConnectionWatcher = ({ onError }: IConnectionWatcherProps) => {
-  const { connectionStatus, wasKicked } = useLobbyRoom();
+  const { connectionStatus, wasKicked, wasClosed } = useLobbyRoom();
 
   useEffect(() => {
     if (connectionStatus === 'error') onError();
@@ -22,6 +22,13 @@ const ConnectionWatcher = ({ onError }: IConnectionWatcherProps) => {
     onError();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wasKicked]);
+
+  useEffect(() => {
+    if (!wasClosed) return;
+    toast.error('Хост закрив лобі');
+    onError();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wasClosed]);
 
   return null;
 };

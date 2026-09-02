@@ -1,3 +1,12 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 1.5rem;
+  background: var(--color-bg);
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;

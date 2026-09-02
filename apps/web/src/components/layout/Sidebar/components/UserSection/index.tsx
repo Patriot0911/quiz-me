@@ -7,11 +7,9 @@ import { useAppSelector } from '@/hooks/redux';
 import { authStatusSelector } from '@/hooks/redux/auth';
 import Button from '@/components/ui/Button';
 import { FaUserGraduate } from 'react-icons/fa';
-import { ISidebarSectionProps } from '@/interfaces/layout/sidebar';
-
 import styles from './styles.module.scss';
 
-const UserSection = ({ isOpen }: ISidebarSectionProps) => {
+const UserSection = () => {
   const status = useAppSelector(authStatusSelector);
   const { isLoading, } = useMeQuery();
 
@@ -21,11 +19,11 @@ const UserSection = ({ isOpen }: ISidebarSectionProps) => {
     <div className={styles['user-section-wrapper']}>
       {
         status === 'authenticated' ? (
-          <SidebarUserProfile isOpen={isOpen} />
+          <SidebarUserProfile />
         ) : (
-          <Link href='/login'>
-            <Button leftIcon={FaUserGraduate({})}>
-              {isOpen ? 'Sign In' : ''}
+          <Link href='/login' className={styles['auth-link']}>
+            <Button className={styles['auth-button']} size='md' leftIcon={FaUserGraduate({})}>
+              Sign In
             </Button>
           </Link>
         )

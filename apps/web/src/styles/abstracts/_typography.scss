@@ -1,6 +1,9 @@
 :root {
   --font-primary: var(--font-plus-jakarta), system-ui, sans-serif;
   --font-secondary: var(--font-lora), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-body: var(--font-primary);
+  --font-display: var(--font-primary);
 
   --text-sm: 0.875rem;
   --text-md: 1rem;

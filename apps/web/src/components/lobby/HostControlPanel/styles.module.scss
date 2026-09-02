@@ -12,6 +12,13 @@
   gap: 0.25rem;
 }
 
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 .title {
   font-size: var(--text-xl);
   font-weight: var(--font-weight-bold);

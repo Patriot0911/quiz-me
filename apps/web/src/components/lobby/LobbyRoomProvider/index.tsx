@@ -33,6 +33,7 @@ const LobbyRoomProvider = ({
   const [snapshot, setSnapshot] = useState<ILobbySnapshot | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [wasKicked, setWasKicked] = useState(false);
+  const [wasClosed, setWasClosed] = useState(false);
 
   useEffect(() => {
     const socket = createLobbySocket(auth);
@@ -58,6 +59,10 @@ const LobbyRoomProvider = ({
 
     socket.on('lobby:kicked', () => {
       setWasKicked(true);
+    });
+
+    socket.on('lobby:closed', () => {
+      setWasClosed(true);
     });
 
     socket.on('lobby:event', (event: ILobbyEventBroadcast) => {
@@ -116,6 +121,7 @@ const LobbyRoomProvider = ({
         snapshot,
         errorMessage,
         wasKicked,
+        wasClosed,
         role,
         selfParticipantId,
         armRound,
