@@ -1,0 +1,31 @@
+.badgeActive,
+.badgeLocked,
+.badgeTimeout,
+.badgeQueue {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.badgeActive {
+  background-color: var(--color-success-50);
+  color: var(--color-success-500);
+}
+
+.badgeLocked {
+  background-color: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+.badgeTimeout {
+  background-color: var(--color-error-50);
+  color: var(--color-error-500);
+}
+
+.badgeQueue {
+  background-color: var(--color-accent-50);
+  color: var(--color-accent-500);
+}

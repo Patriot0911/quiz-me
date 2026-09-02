@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { appConfig, authConfig, dbConfig } from './config';
+import { appConfig, authConfig, dbConfig, lobbyConfig } from './config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { LobbyModule } from './modules/lobby/lobby.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, dbConfig, authConfig],
+      load: [appConfig, dbConfig, authConfig, lobbyConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -31,6 +32,7 @@ import { UsersModule } from './modules/users/users.module';
     }),
     AuthModule,
     UsersModule,
+    LobbyModule,
   ],
   providers: [],
 })

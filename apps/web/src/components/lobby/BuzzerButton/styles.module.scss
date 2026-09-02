@@ -1,0 +1,30 @@
+.buzzer {
+  width: min(70vw, 280px);
+  height: min(70vw, 280px);
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  user-select: none;
+
+  background-color: var(--color-primary);
+  color: var(--color-light);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-bold);
+
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.1s ease, background-color 0.2s ease, opacity 0.2s ease;
+
+  &:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+}
+
+.winner {
+  background-color: var(--color-success);
+}
+
+.disabled {
+  cursor: default;
+  opacity: 0.5;
+  background-color: var(--color-neutral-400);
+}
