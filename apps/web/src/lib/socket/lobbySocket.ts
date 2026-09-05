@@ -9,5 +9,10 @@ export const createLobbySocket = (auth: TLobbySocketAuth): Socket => {
     auth,
     autoConnect: false,
     transports: ['websocket'],
+    reconnection: true,
+    reconnectionAttempts: 20,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    timeout: 10000,
   });
 };

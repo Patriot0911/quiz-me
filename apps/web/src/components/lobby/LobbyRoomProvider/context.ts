@@ -2,7 +2,12 @@ import { createContext, useContext } from 'react';
 import { LobbyMode } from '@/enums/lobby-mode.enum';
 import { IAckResponse, ILobbySnapshot } from '@/interfaces/lobby/snapshot';
 
-export type TLobbyConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
+export type TLobbyConnectionStatus =
+  | 'connecting'
+  | 'connected'
+  | 'reconnecting'
+  | 'disconnected'
+  | 'error';
 
 export interface ILobbyRoomContextValue {
   connectionStatus: TLobbyConnectionStatus;
@@ -21,6 +26,8 @@ export interface ILobbyRoomContextValue {
   kickParticipant: (participantId: string) => Promise<IAckResponse>;
   updateSettings: (changes: { mode?: LobbyMode; timeoutSeconds?: number }) => Promise<IAckResponse>;
   buzz: () => Promise<IAckResponse>;
+  reconnect: () => void;
+  requestSync: () => void;
 }
 
 export const LobbyRoomContext = createContext<ILobbyRoomContextValue | null>(null);

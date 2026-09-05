@@ -556,13 +556,11 @@ export class LobbyRuntimeService implements OnApplicationBootstrap {
     return { ok: true };
   }
 
-  sweepExpiredTimeouts(): string[] {
+  sweepExpiredTimeouts(): Array<{ lobbyId: string; participantId: string }> {
     const now = Date.now();
-    const changedLobbyIds: string[] = [];
+    const expired: Array<{ lobbyId: string; participantId: string }> = [];
 
     for (const [lobbyId, state] of this.lobbies) {
-      let changed = false;
-
       for (const participant of state.participants.values()) {
         if (
           participant.status === ParticipantStatus.TimedOut &&
@@ -571,7 +569,7 @@ export class LobbyRuntimeService implements OnApplicationBootstrap {
         ) {
           participant.status = ParticipantStatus.Active;
           participant.timeoutUntil = null;
-          changed = true;
+          expired.push({ lobbyId, participantId: participant.id });
 
           this.participantRepository
             .update(participant.id, {
@@ -584,13 +582,17 @@ export class LobbyRuntimeService implements OnApplicationBootstrap {
                 error,
               ),
             );
+
+          this.eventLog.log(
+            lobbyId,
+            LobbyEventType.TimeoutExpired,
+            participant.id,
+          );
         }
       }
-
-      if (changed) changedLobbyIds.push(lobbyId);
     }
 
-    return changedLobbyIds;
+    return expired;
   }
 
   closeLobby(lobbyId: string): void {

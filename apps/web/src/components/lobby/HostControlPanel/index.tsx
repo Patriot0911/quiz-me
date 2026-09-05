@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { useLobbyRoom } from '../LobbyRoomProvider/context';
+import ConnectionStatusBanner from '../ConnectionStatusBanner';
 import ParticipantList from '../ParticipantList';
 import HostModeSettings from '../HostModeSettings';
 import HostRoundControls from '../HostRoundControls';
@@ -21,7 +22,7 @@ interface IHostControlPanelProps {
 }
 
 const HostControlPanel = ({ code }: IHostControlPanelProps) => {
-  const { snapshot, connectionStatus, errorMessage } = useLobbyRoom();
+  const { snapshot, connectionStatus, errorMessage, reconnect } = useLobbyRoom();
   const router = useRouter();
   const closeLobbyMutation = useCloseLobbyMutation();
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
@@ -57,6 +58,7 @@ const HostControlPanel = ({ code }: IHostControlPanelProps) => {
 
   return (
     <div className={styles.wrapper}>
+      <ConnectionStatusBanner status={connectionStatus} onReconnect={reconnect} />
       <header className={styles.header}>
         <div className={styles.headerTop}>
           <h1 className={styles.title}>{snapshot.lobby.title}</h1>

@@ -62,8 +62,16 @@ export class LobbyGateway
     });
 
     this.timeoutSweepInterval = setInterval(() => {
-      const changedLobbyIds = this.runtime.sweepExpiredTimeouts();
+      const expired = this.runtime.sweepExpiredTimeouts();
+      const changedLobbyIds = new Set(expired.map((entry) => entry.lobbyId));
       changedLobbyIds.forEach((lobbyId) => this.broadcastSnapshot(lobbyId));
+      expired.forEach(({ lobbyId, participantId }) =>
+        this.broadcastEvent(
+          lobbyId,
+          LobbyEventType.TimeoutExpired,
+          participantId,
+        ),
+      );
     }, 1000);
   }
 
@@ -153,6 +161,13 @@ export class LobbyGateway
       );
       this.broadcastSnapshot(lobbyId);
     }
+  }
+
+  @SubscribeMessage('lobby:requestSnapshot')
+  handleRequestSnapshot(@ConnectedSocket() socket: LobbySocket) {
+    const state = this.runtime.getStateByLobbyId(socket.data.lobbyId);
+    if (!state) return { ok: false, reason: 'not-found' };
+    return { ok: true, snapshot: this.runtime.buildSnapshot(state) };
   }
 
   @SubscribeMessage('participant:buzz')

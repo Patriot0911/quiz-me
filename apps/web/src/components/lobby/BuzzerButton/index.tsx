@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useLobbyRoom } from '../LobbyRoomProvider/context';
 import { LobbyRoundState } from '@/enums/lobby-round-state.enum';
 import { ParticipantStatus } from '@/enums/participant-status.enum';
@@ -8,8 +9,15 @@ import { cn } from '@/lib/cn';
 
 import styles from './styles.module.scss';
 
+const BUZZ_ERROR_MESSAGES: Record<string, string> = {
+  'timed-out': 'Таймаут ще триває.',
+  'not-armed': 'Раунд ще не почався.',
+  'already-buzzed': 'Ви вже натиснули.',
+  'cannot-arm-while-locked': 'Кнопку вже заблоковано.',
+};
+
 const BuzzerButton = () => {
-  const { snapshot, selfParticipantId, buzz } = useLobbyRoom();
+  const { snapshot, selfParticipantId, buzz, requestSync } = useLobbyRoom();
   const [isBuzzing, setIsBuzzing] = useState(false);
 
   const self = snapshot?.participants.find((p) => p.id === selfParticipantId);
@@ -33,12 +41,20 @@ const BuzzerButton = () => {
     const interval = setInterval(tick, 1000);
     // fires exactly once, at the real deadline, so the button unlocks on time
     // regardless of the 1s interval's alignment
-    const expiry = setTimeout(tick, Math.max(0, timeoutUntilMs - Date.now()));
+    const msUntilExpiry = Math.max(0, timeoutUntilMs - Date.now());
+    const expiry = setTimeout(tick, msUntilExpiry);
+    // Fallback in case the server's timeout-expired broadcast is missed (e.g. a
+    // backgrounded tab throttling timers): ask the server directly shortly after
+    // the deadline. If a real update already resolved the timeout by then, this
+    // effect will have re-run and cleanup will have cancelled this timer already.
+    const fallback = setTimeout(() => requestSync(), msUntilExpiry + 500);
 
     return () => {
       clearInterval(interval);
       clearTimeout(expiry);
+      clearTimeout(fallback);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTimedOutByServer, timeoutUntilMs]);
 
   const isTimedOut = isTimedOutByServer && remainingSeconds > 0;
@@ -55,7 +71,13 @@ const BuzzerButton = () => {
   const handleClick = () => {
     if (disabled) return;
     setIsBuzzing(true);
-    void buzz().finally(() => setIsBuzzing(false));
+    void buzz()
+      .then((result) => {
+        if (result.ok) return;
+        toast.error(BUZZ_ERROR_MESSAGES[result.reason ?? ''] ?? 'Не вдалося натиснути кнопку.');
+        if (result.reason === 'timed-out') requestSync();
+      })
+      .finally(() => setIsBuzzing(false));
   };
 
   const label = () => {

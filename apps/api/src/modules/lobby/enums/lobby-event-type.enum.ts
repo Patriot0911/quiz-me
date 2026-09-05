@@ -13,4 +13,5 @@ export enum LobbyEventType {
   ParticipantRenamed = 'participant_renamed',
   ParticipantKicked = 'participant_kicked',
   ModeChanged = 'mode_changed',
+  TimeoutExpired = 'timeout_expired',
 }
